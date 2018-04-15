@@ -1,5 +1,6 @@
 #include "Mutex.h"
 #include "EventLoop.h"
+#include "Channel.h"
 
 using namespace bev;
 
@@ -100,6 +101,18 @@ void EventLoop::runInLoop(const Functor& cb)
     {
         queueInLoop(cb);
     }
+}
+
+size_t EventLoop::queueSize() const
+{
+    MutexLockGuard lock(mutex_);
+    return pendingFunctors_.size();
+}
+
+
+bool EventLoop::hasChannel(Channel* channel)
+{
+    // TODO
 }
 
 void EventLoop::onDoPendingFunctors(struct ev_loop* loop, struct ev_check* w, int events)

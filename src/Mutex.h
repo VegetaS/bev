@@ -1,5 +1,5 @@
-#ifndef SRC_BEV_MUTEX_H
-#define SRC_BEV_MUTEX_H
+#ifndef BEV_SRC_MUTEX_H
+#define BEV_SRC_MUTEX_H
 
 #include <CurrentThread.h>
 #include <boost/noncopyable.hpp>

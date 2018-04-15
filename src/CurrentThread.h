@@ -1,5 +1,5 @@
-#ifndef SRC_BEV_CURRENTTHREAD_H
-#define SRC_BEV_CURRENTTHREAD_H
+#ifndef BEV_SRC_CURRENTTHREAD_H
+#define BEV_SRC_CURRENTTHREAD_H
 
 #include <errno.h>
 #include <stdio.h>

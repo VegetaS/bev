@@ -1,5 +1,5 @@
-#ifndef SRC_BEV_CALLBASKS_H
-#define SRC_BEV_CALLBASKS_H
+#ifndef BEV_SRC_CALLBASKS_H
+#define BEV_SRC_CALLBASKS_H
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>

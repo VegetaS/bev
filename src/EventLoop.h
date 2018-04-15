@@ -13,6 +13,8 @@
 
 namespace bev {
 
+    class Channel;
+
     class EventLoop : boost::noncopyable
     {
         public:
@@ -27,6 +29,8 @@ namespace bev {
             void queueInLoop(const Functor& cb);
             void runInLoop(const Functor& cb);
             size_t queueSize() const;
+
+            bool hasChannel(Channel* channel);
 
             void assertInLoopThread()
             {

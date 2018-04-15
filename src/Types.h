@@ -1,5 +1,5 @@
-#ifndef SRC_TYPES_H
-#define SRC_TYPES_H
+#ifndef BEV_SRC_TYPES_H
+#define BEV_SRC_TYPES_H
 
 #include <stdint.h>
 #include <string>
