@@ -6,6 +6,11 @@ using namespace bev;
 
 namespace
 {
+	const int kNew = -1;
+	const int kAdd = 1;
+	const int kDeleted = 2;
+
+	__thread EventLoop* t_loopInThisThread = 0;
 #pragma GCC diagnostic ignored "-Wold-style-cast"
     class IgnoreSigPipe
     {
@@ -58,6 +63,58 @@ void EventLoop::quit()
     wakeUp();
 }
 
+void bev::EventLoop::updateChannel(Channel *channel)
+{
+	assert(channel->ownerLoop() == this);
+	assertInLoopThread();
+
+	const int index = channel->index();
+	if (index == kNew || index == kDeleted)
+	{
+		int fd = channel->fd();
+		if (index == kNew)
+		{
+			assert(channels_.find(fd) == channels_.end());
+			channels_[fd] = channel;
+		}
+		else
+		{
+			assert(channles_.find(fd) != channels.end());
+			assert(channels_[fd] == channel);
+		}
+
+		channel->set_index(kAdded);
+		update(EPOLL_CTL_ADD, channel);
+	}
+	else
+	{
+		int fd = channel->fd();
+		(void)fd;
+		assert(channels_.find(fd) != channels.end());
+		assert(channels_[fd] == channel);
+		assert(index == kAdded);
+		if (channel->isNoneEvent())
+		{
+			update(EPOLL_CTL_DEL, channel);
+			channel->set_index(kDeleted);
+		}
+		else
+		{
+			update(EPOLL_CTL_MOD, channel);
+		}
+	}
+}
+
+EventLoop * bev::EventLoop::getEventLoopOfCurrentThread()
+{
+	return t_loopInThisThread;
+}
+
+void bev::EventLoop::abortNotInLoopThread()
+{
+	// TODO LOG_FATAL
+}
+
 void EventLoop::onWaked(struct ev_loop* loop, struct ev_async* w, int event)
 {
     EventLoop* evloop = static_cast<EventLoop*>(ev_userdata(loop));
@@ -76,6 +133,10 @@ void EventLoop::handlerWake()
         ev_break(loop_, EVBREAK_ALL);
         return;
     }
+}
+
+void bev::EventLoop::update(int operation, Channel * channel)
+{
 }
 
 void EventLoop::queueInLoop(const Functor& cb)

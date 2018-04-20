@@ -20,7 +20,7 @@ namespace bev
             Channel(EventLoop* loop, int fd);
             ~Channel();
 
-            void handleEvent(Timestamp receiveTime);
+            void handleEvent();
             void setReadCallback(const ReadEventCallback& cb)
             { readCallback_ = cb; }
             void setWriteCallback(const EventCallback& cb)
@@ -55,7 +55,7 @@ namespace bev
             static string eventsToString(int fd, int ev);
 
             void update();
-            void handleEventWithGuard(Timestamp receiveTime);
+            void handleEventWithGuard();
 
             static const int kNoneEvent;
             static const int kReadEvent;

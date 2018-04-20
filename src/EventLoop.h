@@ -7,6 +7,7 @@
 #include "Mutex.h"
 
 #include <vector>
+#include <unordered_map>
 
 #include <boost/noncopyable.hpp>
 #include <ev++.h>
@@ -19,6 +20,7 @@ namespace bev {
     {
         public:
             typedef boost::function<void()> Functor;
+			typedef std::unordered_map<int, Channel*> ChannelMap;
 
             EventLoop();
             ~EventLoop();
@@ -41,14 +43,16 @@ namespace bev {
             }
 
             bool isInLoopThread() const { return threadId_ == bev::tid(); }
-
+			void updateChannel(Channel*);
             static EventLoop* getEventLoopOfCurrentThread();
+
         private:
             void abortNotInLoopThread();
 
             static void onWaked(struct ev_loop*, struct ev_async*, int);
             void wakeUp();
             void handlerWake();
+			void update(int operation, Channel* channel);
 
             static void onDoPendingFunctors(struct ev_loop*, struct ev_check*, int);
             void doPendingFunctors();
@@ -65,6 +69,8 @@ namespace bev {
             std::vector<Functor> pendingFunctors_; // @GuardedBy mutex_
 
             const pid_t threadId_;
+
+			ChannelMap channels_;
 
     };
 } // namespace bev

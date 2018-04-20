@@ -33,4 +33,36 @@ Channel::~Channel()
     }
 }
 
+void bev::Channel::update()
+{
+	addedToLoop_ = true;
+}
+
+void bev::Channel::handleEvent()
+{
+	boost::shared_ptr<void> guard;
+	if (tied_)
+	{
+		guard = tie_.lock();
+		if (guard)
+		{
+			handleEventWithGuard();
+		}
+	}
+	else
+	{
+		handleEventWithGuard();
+	}
+}
+
+void bev::Channel::tie(const boost::shared_ptr<void>& obj)
+{
+	tied_ = true;
+	tie_ = obj;
+}
+
+void bev::Channel::handleEventWithGuard()
+{
+}
+
 
