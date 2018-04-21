@@ -19,7 +19,8 @@ Channel::Channel(EventLoop* loop, int fd)
       logHup_(true),
       tied_(false),
       eventHandling_(false),
-      addedToLoop_(false)
+      addedToLoop_(false),
+      eventIo_(new ev_io)
 {
 }
 
@@ -36,6 +37,14 @@ Channel::~Channel()
 void bev::Channel::update()
 {
 	addedToLoop_ = true;
+}
+
+void bev::Channel::onHandleEvent(struct ev_loop* loop, struct ev_io* io,
+        int revents)
+{
+    Channel* channel = static_cast<Channel*>(io->data);
+    channel->set_revents(revents);
+    channel->handleEvent();
 }
 
 void bev::Channel::handleEvent()
@@ -63,6 +72,37 @@ void bev::Channel::tie(const boost::shared_ptr<void>& obj)
 
 void bev::Channel::handleEventWithGuard()
 {
+    eventHandling_ = true;
+    if ((revents_ & POLLHUP) && !(revents_ & POLLIN))
+    {
+        if (logHup_)
+        {
+            // TODO LOG
+        }
+        if (closeCallback_) closeCallback_();
+    }
+
+    if (revents_ & POLLNVAL)
+    {
+        // TODO
+    }
+
+    if (revents_ & (POLLERR | POLLNVAL))
+    {
+        if (errorCallback_) errorCallback_();
+    }
+
+    if (revents_ & (POLLIN | POLLPRI | POLLRDHUP))
+    {
+        if (readCallback_) readCallback_();
+    }
+
+    if (revents_ & POLLOUT)
+    {
+        if (writeCallback_) writeCallback_();
+    }
+
+    eventHandling_ = false;
 }
 
 

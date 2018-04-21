@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>  // snprintf
-#include <strings.h>  // bzero
+#include <string.h>  // bzero
 #include <sys/socket.h>
 #include <sys/uio.h>  // readv
 #include <unistd.h>
@@ -179,8 +179,7 @@ void sockets::shutdownWrite(int sockfd)
     }
 }
 
-void sockets::toIpPort(char* buf, size_t size,
-        const struct sockaddr* addr)
+void sockets::toIpPort(char* buf, size_t size, const struct sockaddr* addr)
 {
     toIp(buf,size, addr);
     size_t end = ::strlen(buf);
@@ -207,8 +206,7 @@ void sockets::toIp(char* buf, size_t size,
     }
 }
 
-void sockets::fromIpPort(const char* ip, uint16_t port,
-        struct sockaddr_in* addr)
+void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in* addr)
 {
     addr->sin_family = AF_INET;
     addr->sin_port = hostToNetwork16(port);
@@ -218,8 +216,7 @@ void sockets::fromIpPort(const char* ip, uint16_t port,
     }
 }
 
-void sockets::fromIpPort(const char* ip, uint16_t port,
-        struct sockaddr_in6* addr)
+void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in6* addr)
 {
     addr->sin6_family = AF_INET6;
     addr->sin6_port = hostToNetwork16(port);

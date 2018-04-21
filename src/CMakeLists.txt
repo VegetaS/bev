@@ -3,7 +3,12 @@ add_subdirectory(ev)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 set(SRC_SRCS
-    EventLoop.cpp
+    EventLoop.cc
+    Acceptor.cc
+    Channel.cc
+    InetAddress.cc
+    Socket.cc
+    SocketsOps.cc
 )
 
 set(SRCS ${SRC_SRCS} ${EV_SRCS})

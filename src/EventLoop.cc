@@ -2,12 +2,14 @@
 #include "EventLoop.h"
 #include "Channel.h"
 
+#include <sys/epoll.h>
+
 using namespace bev;
 
 namespace
 {
 	const int kNew = -1;
-	const int kAdd = 1;
+	const int kAdded = 1;
 	const int kDeleted = 2;
 
 	__thread EventLoop* t_loopInThisThread = 0;
@@ -79,7 +81,7 @@ void bev::EventLoop::updateChannel(Channel *channel)
 		}
 		else
 		{
-			assert(channles_.find(fd) != channels.end());
+			assert(channels_.find(fd) != channels_.end());
 			assert(channels_[fd] == channel);
 		}
 
@@ -90,7 +92,7 @@ void bev::EventLoop::updateChannel(Channel *channel)
 	{
 		int fd = channel->fd();
 		(void)fd;
-		assert(channels_.find(fd) != channels.end());
+		assert(channels_.find(fd) != channels_.end());
 		assert(channels_[fd] == channel);
 		assert(index == kAdded);
 		if (channel->isNoneEvent())
@@ -137,6 +139,18 @@ void EventLoop::handlerWake()
 
 void bev::EventLoop::update(int operation, Channel * channel)
 {
+    struct ev_io *ev = channel->eventIo();
+    if (operation == EPOLL_CTL_DEL)
+    {
+        ev_io_stop(loop_, ev);
+        return;
+    }
+
+    int fd = channel->fd();
+    int events = channel->events();
+    ev->data = channel;
+    ev_io_init(ev, &Channel::onHandleEvent, fd, events);
+    ev_io_start(loop_, ev);
 }
 
 void EventLoop::queueInLoop(const Functor& cb)

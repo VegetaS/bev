@@ -16,7 +16,7 @@ namespace bev {
     class EventLoop;
     class InetAddress;
 
-    class Acceptor : boost:noncopyable
+    class Acceptor : boost::noncopyable
     {
         public:
             typedef boost::function<void (int sockfd, const InetAddress&)> NewConnectionCallback;
@@ -25,7 +25,7 @@ namespace bev {
             ~Acceptor();
 
             void setNewConnectionCallback(const NewConnectionCallback& cb) { newConnectionCallback_ = cb;}
-            bool listening() const { return listening_; }
+            bool listening() const { return listenning_; }
             void listen();
 
         private:

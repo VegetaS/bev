@@ -6,6 +6,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
+#include <ev++.h>
 
 namespace bev
 {
@@ -36,6 +37,9 @@ namespace bev
             void set_revents(int revt) { revents_ = revt; } // used by pollers
             bool isNoneEvent() const { return events_ == kNoneEvent; }
 
+            static void onHandleEvent(struct ev_loop* loop, struct ev_io* io,
+                    int revents);
+
             void enableReading() { events_ |= kReadEvent; update(); }
             void disableReading() { events_ &= ~kReadEvent; update(); }
             void enableWriting() { events_ |= kWriteEvent; update(); }
@@ -51,8 +55,10 @@ namespace bev
             EventLoop* ownerLoop() { return loop_; }
             void remove();
 
+            struct ev_io* eventIo() { return eventIo_; }
+
         private:
-            static string eventsToString(int fd, int ev);
+            static std::string eventsToString(int fd, int ev);
 
             void update();
             void handleEventWithGuard();
@@ -76,6 +82,10 @@ namespace bev
             EventCallback writeCallback_;
             EventCallback closeCallback_;
             EventCallback errorCallback_;
+        
+        private:
+            // for uv
+            struct ev_io* eventIo_;
     };
 
 } // namespace bev

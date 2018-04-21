@@ -2,7 +2,12 @@
 #define BEV_SRC_TYPES_H
 
 #include <stdint.h>
+#ifdef BEV_STD_STRING
 #include <string>
+#else  // !BEV_STD_STRING
+#include <ext/vstring.h>
+#include <ext/vstring_fwd.h>
+#endif
 
 #ifndef NDEBUG
 #include <assert.h>
@@ -13,8 +18,11 @@
 ///
 namespace bev
 {
-
-using std::string;
+#ifdef BEV_STD_STRING
+    using std::string;
+#else  // !BEV_STD_STRING
+    typedef __gnu_cxx::__sso_string string;
+#endif
 
 // Taken from google-protobuf stubs/common.h
 //

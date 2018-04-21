@@ -7,7 +7,7 @@
 #include "Mutex.h"
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 #include <boost/noncopyable.hpp>
 #include <ev++.h>
@@ -20,7 +20,7 @@ namespace bev {
     {
         public:
             typedef boost::function<void()> Functor;
-			typedef std::unordered_map<int, Channel*> ChannelMap;
+			typedef std::map<int, Channel*> ChannelMap;
 
             EventLoop();
             ~EventLoop();
