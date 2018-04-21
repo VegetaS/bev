@@ -1,7 +1,7 @@
 #ifndef BEV_SRC_INETADDRESS_H
 #define BEV_SRC_INETADDRESS_H
 
-#include "copyable.h"
+#include "Copyable.h"
 #include "StringPiece.h"
 
 #include <netinet/in.h>
@@ -13,7 +13,7 @@ namespace bev
         const struct sockaddr* sockaddr_cast(const struct sockaddr_in6* addr);
     } // namespace sockets
 
-    class InetAddress : public bev::copyable
+    class InetAddress : public bev::Copyable
     {
         public:
             explicit InetAddress(uint16_t port = 0, bool loopbackOnly = false, bool ipv6 = false);
