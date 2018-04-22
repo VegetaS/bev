@@ -24,10 +24,13 @@ namespace bev
             void handleEvent();
             void setReadCallback(const ReadEventCallback& cb)
             { readCallback_ = cb; }
+
             void setWriteCallback(const EventCallback& cb)
             { writeCallback_ = cb; }
+
             void setCloseCallback(const EventCallback& cb)
             { closeCallback_ = cb; }
+
             void setErrorCallback(const EventCallback& cb)
             { errorCallback_ = cb; }
 

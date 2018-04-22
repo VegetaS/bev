@@ -30,6 +30,60 @@ class TcpConnection : boost::noncopyable,
                 const InetAddress& peerAddr);
         ~TcpConnection();
         EventLoop* getLoop() const { return loop_;}
+        const string& name() const { return name_;}
+        const InetAddress& localAddress() const { return localAddr_; }
+        const InetAddress& peerAddress() const { return peerAddr_; }
+        bool connected() const { return state_ == kConnected; }
+        bool disconnected() const { return state_ == kDisconnected; }
+        bool getTcpInfo(struct tcp_info*) const;
+        bool isReading() { return reading_; }
+        string getTcpInfoString() const;
+
+        void send(const void* message, int len);
+        void send(const StringPiece& message);
+        void send(Buffer* message);
+
+        void shutdown();
+        void forceClose();
+        void forceCloseWithDelay(double seconds);
+        void setTcpNoDelay(bool on);
+
+        void startRead();
+        void stopRead();
+
+        void connectEstablished();
+        void connectDestroyed();
+
+        void setContext(const boost::any& context)
+        { context_ = context; }
+
+        const boost::any& getContext() const
+        { return context_; }
+
+        boost::any* getMutableContext()
+        { return &context_; }
+
+        void setConnectionCallback(const ConnectionCallback& cb)
+        { connectionCallback_ = cb; }
+
+        void setMessageCallback(const MessageCallback& cb)
+        { messageCallback_ = cb; }
+
+        void setWriteCompleteCallback(const WriteCompleteCallback& cb)
+        { writeCompleteCallback_ = cb; }
+
+        void setCloseCallback(const CloseCallback& cb)
+        { closeCallback_ = cb; }
+
+        void setHighWaterMarkCallback(const HighWaterMarkCallback& cb, size_t highWaterMark)
+        { highWaterMarkCallback_ = cb; highWaterMark_ = highWaterMark; }
+
+        Buffer* inputBuffer()
+        { return &inputBuffer_; }
+
+        Buffer* outputBuffer()
+        { return &outputBuffer_; }
+
     private:
           enum StateE { kDisconnected, kConnecting, kConnected, kDisconnecting };
           void handleRead();
